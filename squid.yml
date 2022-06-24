@@ -1,0 +1,44 @@
+- hosts: all
+  become: true
+  vars:
+    squid_password:     "{{ lookup('env','DMIPROXY_PASSWORD') }}"
+
+  tasks:
+    - name: Install squid and htpasswd generator with apt
+      apt:
+        state: present
+        update_cache: yes
+        autoclean: yes
+        force_apt_get: yes
+        cache_valid_time: 3600
+        name:
+          - squid
+          - python3-passlib
+          - apache2-utils
+
+    - name: Check if config file exists at standard location
+      stat:
+        path: /etc/squid/squid.conf
+      register: stat_result
+
+    - name: Create htpasswd with standard login
+      community.general.htpasswd:
+        path: /etc/squid/squid.htpasswd
+        name: dmiproxy
+        password: '{{ squid_password }}'
+        owner: root
+        group: root
+        mode: 0640
+
+    - name: Overwrite with default config
+      ansible.builtin.copy:
+          force: yes
+          src: files/etc/squid.conf
+          dest: /etc/squid/squid.conf
+          owner: root
+          group: root
+
+    - name: Restart squid service
+      service:
+        name: squid
+        state: restarted
