@@ -20,8 +20,7 @@
       register: stat_result
 
     - name: Create htpasswd with standard login
-      ansible.builtin.command:
-        cmd: 'htpasswd -bc /etc/squid/squid.htpasswd dmiproxy "{{ DMIPROXY_PASSWORD }}"'
+      ansible.builtin.command: htpasswd -bc /etc/squid/squid.htpasswd dmiproxy {{ DMIPROXY_PASSWORD|quote }}
 
     - name: Set ownership and chmod for htpasswd file
       file: 
