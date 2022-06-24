@@ -1,6 +1,6 @@
 - hosts: localhost
   become: true
-  
+
   tasks:
     - name: Install squid and htpasswd generator with apt
       apt:
@@ -40,7 +40,7 @@
     - name: Overwrite with default config
       ansible.builtin.copy:
           force: yes
-          src: files/etc/squid.conf
+          src: squid.conf
           dest: /etc/squid/squid.conf
           owner: root
           group: root
