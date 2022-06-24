@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: localhost
   become: true
 
   tasks:
@@ -20,10 +20,12 @@
       register: stat_result
 
     - name: Create htpasswd with standard login
-      community.general.htpasswd:
+      ansible.builtin.command:
+        cmd: 'htpasswd -bc /etc/squid/squid.htpasswd dmiproxy "{{ DMIPROXY_PASSWORD }}"'
+
+    - name: Set ownership and chmod for htpasswd file
+      file: 
         path: /etc/squid/squid.htpasswd
-        name: dmiproxy
-        password: '{{ DMIPROXY_PASSWORD }}'
         owner: root
         group: root
         mode: 0640
