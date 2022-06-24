@@ -1,7 +1,5 @@
 - hosts: all
   become: true
-  vars:
-    squid_password:     "{{ lookup('env','DMIPROXY_PASSWORD') }}"
 
   tasks:
     - name: Install squid and htpasswd generator with apt
@@ -25,7 +23,7 @@
       community.general.htpasswd:
         path: /etc/squid/squid.htpasswd
         name: dmiproxy
-        password: '{{ squid_password }}'
+        password: '{{ DMIPROXY_PASSWORD }}'
         owner: root
         group: root
         mode: 0640
